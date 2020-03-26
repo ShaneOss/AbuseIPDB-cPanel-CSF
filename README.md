@@ -17,4 +17,11 @@ Criteria for IP addresses to be added to CSF.deny:
 
 Script can be scheduled to run daily. Initial run may take a few days or more to parse all the IPs in the log. Once your daily check limit has been exceeded, the script will detect and complete. If there were any changes it will then restart CSF+LFD and then you can re-run the next day in 24hrs.
 
+To run daily at 23:00:
+- Create a new directory called "abuseipdbcheck" in /usr/local/cpanel/scripts/
+- Copy the script checkipabuseipdb.sh into the new directory
+- Edit crontab and add a line "0 23 * * * /usr/local/cpanel/scripts/abuseipdbcheck/checkipabuseipdb.sh > /dev/null 2>&1"
+- Restart cron. service crond restart
+
+
 
