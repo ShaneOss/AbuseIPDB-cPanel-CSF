@@ -1,4 +1,5 @@
 #!/bin/bash
+# Copyright (C) 2020 Shane Morgan <shane.morgan@itechpros.com.au>
 
 # Your own AbuseIPDB API Key
 abuseipdbAPIKey="00000000000000000000000 update to you API key 0000000000000000000000000000000000"
