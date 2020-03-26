@@ -1,5 +1,5 @@
 # AbuseIPDB-cPanel-CSF
-Linux Bash Script to parse the IPs in the  cPanel Apache error log. Check them against AbuseIPDB and add to CSF deny list if certain criteria is met. 
+Bash Script to parse the IPs in the  cPanel Apache error log. Check them against AbuseIPDB and add to CSF deny list if certain criteria is met. 
 
 Requirements:
 - AbuseIPDB API key required. One can be obtained at: https://www.abuseipdb.com/account/api (free version limited to 1000 checks per day)
