@@ -1,9 +1,9 @@
 #!/bin/bash
-# Copyright (C) 2020 Shane Morgan <shane.morgan@itechpros.com.au>
 
 # Your own AbuseIPDB API Key
-abuseipdbAPIKey="00000000000000000000000 update to you API key 0000000000000000000000000000000000"
+abuseipdbAPIKey="------------------------------- YOUR API KEY -----------------------------------"
 logfile="/usr/local/apache/logs/error_log"
+logfile=
 
 echo "ABUSEIPDB_CHECK_CHANGES='0'" > ABUSEIPDB_CHECK_CHANGES.txt
 
@@ -31,44 +31,20 @@ else
     echo $ip "IP not already blocked or previously checked."
         # If IP isn't already blocked.
         # Check IP address against AbuseIPDB.
-        read abuseipdbtotalReports abuseipdbconfidenceScore abuseipdbisPublic abuseipdbisWhitelisted abuseipdbcountryName abuseipdblastReportedAt abuseipdbisp abuseipdbusageType abuseipdomain < <(echo $(cur$
+        read abuseipdbtotalReports abuseipdbconfidenceScore abuseipdbisPublic abuseipdbisWhitelisted abuseipdbcountryName abuseipdblastReportedAt abuseipdbisp abuseipdbusageType abuseipdomain < <(echo $(curl --silent -G https://api.abuseipdb.com/api/v2/check \
          --data-urlencode "ipAddress=$ip" \
           -d maxAgeInDays=90 \
           -d verbose \
           -H "Key: $abuseipdbAPIKey" \
           -H "Accept: application/json" --stderr - \
           | jq -r '.data.totalReports,.data.abuseConfidenceScore,.data.isPublic,.data.isWhitelisted,.data.countryName,.data.lastReportedAt,.data.isp,.data.usageType,.data.domain'))
-        #echo "totalReports:" $abuseipdbtotalReports "abuseConfidenceScore:" $abuseipdbconfidenceScore "isPublic:" $abuseipdbisPublic "isWhitelisted:" $abuseipdbisWhitelisted "countryName:" $abuseipdbcountr$
+        #echo "totalReports:" $abuseipdbtotalReports "abuseConfidenceScore:" $abuseipdbconfidenceScore "isPublic:" $abuseipdbisPublic "isWhitelisted:" $abuseipdbisWhitelisted "countryName:" $abuseipdbcountryName "lastReportedAt:" $abuseipdblastReportedAt "isp:" $abuseipdbisp "usageType:" $abuseipdbusageType "domain:" $abuseipdomain
 
         # If IP address is found at AbuseIPDB and abuseConfidenceScore > 10 && isPublic:true && isWhitelisted:false
         if [[ $abuseipdbconfidenceScore -gt 10 && $abuseipdbisPublic -eq "true" && $abuseipdbisWhitelisted -eq "false" ]];
         then
         # Add IP address to csf.deny
-                echo $ip "# AbuseIPDB: Reported" $abuseipdbtotalReports "times. Last Reported:" $abuseipdblastReportedAt "(Domain:" $abuseipdbdomain "Country:" $abuseipdbcountryName "ISP:" $abuseipdbisp "Us$
-                echo $ip "added to csf.deny." $abuseipdbtotalReports "reports at AbuseIPDB.";
-                echo "ABUSEIPDB_CHECK_CHANGES='1'" > ABUSEIPDB_CHECK_CHANGES.txt;
-        elif [ "$abuseipdbtotalReports" == "null" ];
-        then
-elif grep -q "$ip" ABUSEIPDB_CHECKED_IPS_NOT_SUSPECT.txt; then
-    echo $ip "previously checked, not suspected of abuse."
-else
-    echo $ip "IP not already blocked or previously checked."
-        # If IP isn't already blocked.
-        # Check IP address against AbuseIPDB.
-        read abuseipdbtotalReports abuseipdbconfidenceScore abuseipdbisPublic abuseipdbisWhitelisted abuseipdbcountryName abuseipdblastReportedAt abuseipdbisp abuseipdbusageType abuseipdomain < <(echo $(cur$
-         --data-urlencode "ipAddress=$ip" \
-          -d maxAgeInDays=90 \
-          -d verbose \
-          -H "Key: $abuseipdbAPIKey" \
-          -H "Accept: application/json" --stderr - \
-          | jq -r '.data.totalReports,.data.abuseConfidenceScore,.data.isPublic,.data.isWhitelisted,.data.countryName,.data.lastReportedAt,.data.isp,.data.usageType,.data.domain'))
-        #echo "totalReports:" $abuseipdbtotalReports "abuseConfidenceScore:" $abuseipdbconfidenceScore "isPublic:" $abuseipdbisPublic "isWhitelisted:" $abuseipdbisWhitelisted "countryName:" $abuseipdbcountr$
-
-        # If IP address is found at AbuseIPDB and abuseConfidenceScore > 10 && isPublic:true && isWhitelisted:false
-        if [[ $abuseipdbconfidenceScore -gt 10 && $abuseipdbisPublic -eq "true" && $abuseipdbisWhitelisted -eq "false" ]];
-        then
-        # Add IP address to csf.deny
-                echo $ip "# AbuseIPDB: Reported" $abuseipdbtotalReports "times. Last Reported:" $abuseipdblastReportedAt "(Domain:" $abuseipdbdomain "Country:" $abuseipdbcountryName "ISP:" $abuseipdbisp "Us$
+                echo $ip "# AbuseIPDB: Reported" $abuseipdbtotalReports "times. Last Reported:" $abuseipdblastReportedAt "(Domain:" $abuseipdbdomain "Country:" $abuseipdbcountryName "ISP:" $abuseipdbisp "Usage Type:" $abuseipdbusageType")-" $(date +'%c') >> /etc/csf/csf.deny;
                 echo $ip "added to csf.deny." $abuseipdbtotalReports "reports at AbuseIPDB.";
                 echo "ABUSEIPDB_CHECK_CHANGES='1'" > ABUSEIPDB_CHECK_CHANGES.txt;
         elif [ "$abuseipdbtotalReports" == "null" ];
@@ -91,7 +67,7 @@ else
                  echo $ip >> ABUSEIPDB_CHECKED_IPS_NOT_SUSPECT.txt;
         else
                 echo "Condition not matched.";
-                echo "totalReports:" $abuseipdbtotalReports "abuseConfidenceScore:" $abuseipdbconfidenceScore "isPublic:" $abuseipdbisPublic "isWhitelisted:" $abuseipdbisWhitelisted "countryName:" $abuseipd$
+                echo "totalReports:" $abuseipdbtotalReports "abuseConfidenceScore:" $abuseipdbconfidenceScore "isPublic:" $abuseipdbisPublic "isWhitelisted:" $abuseipdbisWhitelisted "countryName:" $abuseipdbcountryName "lastReportedAt:" $abuseipdblastReportedAt "isp:" $abuseipdbisp "usageType:" $abuseipdbusageType "domain:" $abuseipdomain;
         fi
 fi
 done
