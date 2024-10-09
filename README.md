@@ -3,7 +3,8 @@ Bash Script to parse the IPs in the  cPanel Apache error log. Check them against
 
 Requirements:
 - AbuseIPDB API key required. One can be obtained at: https://www.abuseipdb.com/account/api (free version limited to 1000 checks per day)
-- jq (yum install jq) required for parsing JSON responses
+- jq - required for parsing JSON responses
+- grepcidr - required for checking ips are within a cidr range.
 
 Files generated from the script:
 - ABUSEIPDB_CHECKED_IPS_NOT_REPORTED.txt (IP addresses added to the file weren't reported at AbuseIPDB)
